@@ -4,7 +4,7 @@ import TiptapEditor from './components/TiptapEditor.vue'
 import HtmlPreviewPanel from './components/HtmlPreviewPanel.vue'
 
 /** HTMLコンテンツ */
-const content = ref('<h1>Hh</h1><br /><h2>h2</h2><h2>h2</h2><h2>h2</h2><h2>h2</h2><h2>h2</h2>')
+const content = ref('<h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4>')
 </script>
 
 <template>
@@ -26,7 +26,7 @@ const content = ref('<h1>Hh</h1><br /><h2>h2</h2><h2>h2</h2><h2>h2</h2><h2>h2</h
   display: flex;
   gap: 8px;
   width: 100%;
-  height: calc(100vh - 48px);
+  height: calc(100vh - 24px);
 
   &__EditorPane {
     width: 50%;
