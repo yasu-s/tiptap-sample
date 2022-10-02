@@ -9,4 +9,3 @@
 - 
 - https://tiptap.dev/
 - https://next.vuetifyjs.com/en/
-- https://www.npmjs.com/package/splitpanes
