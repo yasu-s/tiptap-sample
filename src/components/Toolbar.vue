@@ -11,10 +11,11 @@ const headings: { level: HeadingLevel; text: string }[] = [
   { level: 2, text: 'h2' },
   { level: 3, text: 'h3' },
   { level: 4, text: 'h4' },
+  { level: 5, text: 'h5' },
 ]
 
-/** フォーマットボタン */
-const formatBtns = [
+/** スタイルボタン */
+const styleBtns = [
   {
     icon: 'mdi-format-bold',
     actionName: 'bold',
@@ -42,6 +43,28 @@ const formatBtns = [
   },
 ]
 
+/** TextAlign */
+const textAlign = ['left', 'center', 'right']
+
+/** フォーマットボタン */
+const formatBtns = [
+  {
+    icon: 'mdi-minus',
+    actionName: 'horizontalRule',
+    click: () => props.editor.chain().focus().setHorizontalRule().run(),
+  },
+  {
+    icon: 'mdi-format-list-bulleted',
+    actionName: 'bulletList',
+    click: () => props.editor.chain().focus().toggleBulletList().run(),
+  },
+  {
+    icon: 'mdi-format-list-numbered',
+    actionName: 'orderedList',
+    click: () => props.editor.chain().focus().toggleOrderedList().run(),
+  },
+]
+
 /** variant取得 */
 function getVariant(name: string) {
   return props.editor.isActive(name) ? 'tonal' : 'plain'
@@ -61,6 +84,7 @@ function setColor(event: Event): void {
 
 <template>
   <div class="Toolbar">
+    <!-- h1-h4 p -->
     <template v-for="(btn, index) in headings" :key="index">
       <v-btn
         rounded="lg"
@@ -80,7 +104,8 @@ function setColor(event: Event): void {
     >
     <v-divider vertical />
 
-    <template v-for="(btn, index) in formatBtns" :key="index">
+    <!-- フォントスタイル変更 -->
+    <template v-for="(btn, index) in styleBtns" :key="index">
       <v-btn
         :icon="btn.icon"
         rounded="lg"
@@ -91,6 +116,43 @@ function setColor(event: Event): void {
     </template>
     <input type="color" :value="props.editor.getAttributes('textStyle').color" @input="setColor($event)" />
     <v-divider vertical />
+
+    <!-- 配置変更 -->
+    <template v-for="(t, index) in textAlign" :key="index">
+      <v-btn
+        rounded="lg"
+        :icon="'mdi-format-align-' + t"
+        :variant="editor.isActive({ textAlign: t }) ? 'tonal' : 'plain'"
+        :color="editor.isActive('heading', { textAlign: t }) ? 'drakgrey' : undefined"
+        @click="editor.chain().focus().setTextAlign(t).run()"
+      />
+    </template>
+    <v-divider vertical />
+
+    <!-- フォーマット変更 -->
+    <template v-for="(btn, index) in formatBtns" :key="index">
+      <v-btn
+        :icon="btn.icon"
+        rounded="lg"
+        :variant="getVariant(btn.actionName)"
+        :color="getColor(btn.actionName)"
+        @click="btn.click()"
+      />
+    </template>
+    <v-btn
+      rounded="lg"
+      icon="mdi-format-indent-increase"
+      :variant="editor.can().sinkListItem('listItem') ? 'tonal' : 'plain'"
+      :color="editor.can().sinkListItem('listItem') ? 'drakgrey' : undefined"
+      @click="editor.chain().focus().sinkListItem('listItem').run()"
+    />
+    <v-btn
+      rounded="lg"
+      icon="mdi-format-indent-decrease"
+      :variant="editor.can().liftListItem('listItem') ? 'tonal' : 'plain'"
+      :color="editor.can().liftListItem('listItem') ? 'drakgrey' : undefined"
+      @click="editor.chain().focus().liftListItem('listItem').run()"
+    />
   </div>
 </template>
 

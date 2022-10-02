@@ -75,5 +75,15 @@ function convertHtml(html: string) {
 :deep(.ProseMirror) {
   border: none;
   outline: none;
+  padding: 8px;
+
+  ul {
+    padding: 0 1rem;
+    list-style: disc;
+  }
+  ol {
+    padding: 0 1rem;
+    list-style: reset;
+  }
 }
 </style>

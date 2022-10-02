@@ -11,5 +11,16 @@ const props = defineProps<{ content: string }>()
   background: #fff;
   height: 100%;
   overflow-y: scroll;
+  padding: 8px;
+}
+
+:deep(ul) {
+  padding: 0 1rem;
+  list-style: disc;
+}
+
+:deep(ol) {
+  padding: 0 1rem;
+  list-style: reset;
 }
 </style>
