@@ -9,11 +9,12 @@ import { Link } from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
 import { Underline } from '@tiptap/extension-underline'
+import Toolbar from './Toolbar.vue'
 
 /** props */
 const props = withDefaults(defineProps<{ modelValue: string }>(), { modelValue: '' })
 
-/** Emit定義 */
+/** emit */
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): string }>()
 
 /** tiptap */
@@ -38,7 +39,11 @@ const editor = useEditor({
 })
 
 /** modelValue監視 */
-watchEffect(() => editor.value?.commands.setContent(props.modelValue))
+watchEffect(() => {
+  if (props.modelValue === convertHtml(editor.value?.getHTML() || '')) return
+  editor.value?.commands.setContent(props.modelValue)
+  // editor.value?.commands.setTextSelection(0)
+})
 
 /** unmound時 */
 onBeforeUnmount(() => {
@@ -54,6 +59,7 @@ function convertHtml(html: string) {
 
 <template>
   <div class="TiptapEditor">
+    <Toolbar v-if="editor" :editor="editor" class="TiptapEditor__Toolbar" />
     <EditorContent :editor="editor" class="TiptapEditor__Editor" />
   </div>
 </template>
