@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { ref } from 'vue'
 import 'splitpanes/dist/splitpanes.css'
 import { Splitpanes, Pane } from 'splitpanes'
+import TiptapEditor from './components/TiptapEditor.vue'
 import HtmlPreviewPanel from './components/HtmlPreviewPanel.vue'
 
-/** state */
-const state = reactive({
-  content: '<h1>Hh</h1><br /><h2>h2</h2><h2>h2</h2><h2>h2</h2><h2>h2</h2><h2>h2</h2>',
-})
+/** HTMLコンテンツ */
+const content = ref('<h1>Hh</h1><br /><h2>h2</h2><h2>h2</h2><h2>h2</h2><h2>h2</h2><h2>h2</h2>')
 </script>
 
 <template>
   <div class="App">
-    <div class="App__EditorPane">aaa</div>
+    <div class="App__EditorPane">
+      <TiptapEditor v-model="content" class="App__TiptapEditor" />
+    </div>
     <Splitpanes class="default-theme App__SidePanes" horizontal>
       <Pane class="App__SplitPane" min-size="30" max-size="80">
         <span>1</span>
       </Pane>
       <Pane class="App__SplitPane">
-        <HtmlPreviewPanel class="App__HtmlPreviewPanel" :content="state.content" />
+        <HtmlPreviewPanel class="App__HtmlPreviewPanel" :content="content" />
       </Pane>
     </Splitpanes>
   </div>
