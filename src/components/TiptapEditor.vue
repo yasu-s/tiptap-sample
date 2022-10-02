@@ -39,11 +39,11 @@ const editor = useEditor({
 })
 
 /** modelValue監視 */
-watchEffect(() => {
-  if (props.modelValue === convertHtml(editor.value?.getHTML() || '')) return
-  editor.value?.commands.setContent(props.modelValue)
-  // editor.value?.commands.setTextSelection(0)
-})
+// watchEffect(() => {
+//   if (props.modelValue === convertHtml(editor.value?.getHTML() || '')) return
+//   editor.value?.commands.setContent(props.modelValue)
+//   // editor.value?.commands.setTextSelection(0)
+// })
 
 /** unmound時 */
 onBeforeUnmount(() => {

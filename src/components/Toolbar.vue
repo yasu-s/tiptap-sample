@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { reactive } from 'vue'
 import { Level as HeadingLevel } from '@tiptap/extension-heading'
 import { Editor } from '@tiptap/vue-3'
 
 /** props */
 const props = defineProps<{ editor: Editor }>()
+
+/** state */
+const state = reactive({
+  dialog: false,
+  url: '',
+})
 
 /** h1-h4設定 */
 const headings: { level: HeadingLevel; text: string }[] = [
@@ -82,15 +89,21 @@ function setColor(event: Event): void {
   props.editor.chain().focus().setColor(target.value).run()
 }
 
+/** URLダイアログオープン */
+function openUrlDialog(): void {
+  const previousUrl = props.editor.getAttributes('link').href as string
+  state.url = previousUrl ? previousUrl : ''
+  state.dialog = true
+}
+
 /** Link設定 */
 function setLink(): void {
-  const previousUrl = props.editor.getAttributes('link').href as string
-  const url = window.prompt('URL', previousUrl ? previousUrl : 'https://')
-  if (url) {
-    props.editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+  if (state.url) {
+    props.editor.chain().focus().extendMarkRange('link').setLink({ href: state.url }).run()
   } else {
     props.editor.chain().focus().extendMarkRange('link').unsetLink().run()
   }
+  state.dialog = false
 }
 </script>
 
@@ -179,7 +192,28 @@ function setLink(): void {
     />
 
     <!-- その他設定 -->
-    <v-btn class="Toolbar__Button" icon="mdi-link" rounded="lg" variant="plain" @click="setLink()" />
+    <v-dialog v-model="state.dialog" class="Toolbar__UrlDialog">
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">URL設定</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field v-model="state.url" class="Toolbar__UrlInput" label="URL" clearable persistent-clear />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue-darken-1" @click="state.dialog = false"> 閉じる </v-btn>
+          <v-btn color="blue-darken-1" @click="setLink()"> URL設定 </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-btn class="Toolbar__Button" icon="mdi-link" rounded="lg" variant="plain" @click="openUrlDialog()" />
   </div>
 </template>
 
@@ -204,6 +238,14 @@ function setLink(): void {
     width: 32px;
     height: 32px;
     margin: 4px;
+  }
+
+  &__UrlDialog {
+    width: 750px;
+  }
+
+  &__UrlInput {
+    width: 600px;
   }
 }
 </style>
