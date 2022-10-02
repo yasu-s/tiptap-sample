@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { withDefaults, onBeforeUnmount, watchEffect } from 'vue'
+import { withDefaults, onBeforeUnmount, watch, toRefs } from 'vue'
 import { useEditor, EditorContent } from '@tiptap/vue-3'
 import StarterKit from '@tiptap/starter-kit'
 import { Color } from '@tiptap/extension-color'
@@ -13,6 +13,7 @@ import Toolbar from './Toolbar.vue'
 
 /** props */
 const props = withDefaults(defineProps<{ modelValue: string }>(), { modelValue: '' })
+const { modelValue } = toRefs(props)
 
 /** emit */
 const emit = defineEmits<{ (e: 'update:modelValue', value: string): string }>()
@@ -39,11 +40,10 @@ const editor = useEditor({
 })
 
 /** modelValue監視 */
-// watchEffect(() => {
-//   if (props.modelValue === convertHtml(editor.value?.getHTML() || '')) return
-//   editor.value?.commands.setContent(props.modelValue)
-//   // editor.value?.commands.setTextSelection(0)
-// })
+watch(modelValue, () => {
+  if (modelValue.value === convertHtml(editor.value?.getHTML() || '')) return
+  editor.value?.commands.setContent(modelValue.value)
+})
 
 /** unmound時 */
 onBeforeUnmount(() => {

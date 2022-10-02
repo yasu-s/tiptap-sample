@@ -13,7 +13,7 @@ const content = ref('<h1>h1</h1><h2>h2</h2><h3>h3</h3><h4>h4</h4>')
       <TiptapEditor v-model="content" class="App__TiptapEditor" />
     </div>
     <div class="App__SidePanes">
-      <v-textarea v-model="content" label="HTML入力" rows="18" no-resize="true" hide-details="true" />
+      <v-textarea v-model="content" label="HTML入力" rows="18" :no-resize="true" hide-details="true" />
       <div>HTML表示</div>
       <HtmlPreviewPanel class="App__HtmlPreviewPanel" :content="content" />
     </div>
