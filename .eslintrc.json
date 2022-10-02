@@ -22,6 +22,7 @@
     ],
     "vue/block-lang": ["error", { "script": { "lang": "ts" } }],
     "vue/component-api-style": ["error", ["script-setup"]],
-    "vue/component-name-in-template-casing": ["error", "PascalCase"]
+    "vue/component-name-in-template-casing": ["error", "PascalCase"],
+    "vue/multi-word-component-names": "off"
   }
 }
