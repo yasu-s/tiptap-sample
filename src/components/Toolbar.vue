@@ -74,11 +74,23 @@ function getVariant(name: string) {
 function getColor(name: string) {
   return props.editor.isActive(name) ? 'drakgrey' : undefined
 }
+
 /** 色設定 */
 function setColor(event: Event): void {
   const target = event.target as HTMLInputElement
   if (!target) return
   props.editor.chain().focus().setColor(target.value).run()
+}
+
+/** Link設定 */
+function setLink(): void {
+  const previousUrl = props.editor.getAttributes('link').href as string
+  const url = window.prompt('URL', previousUrl ? previousUrl : 'https://')
+  if (url) {
+    props.editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+  } else {
+    props.editor.chain().focus().extendMarkRange('link').unsetLink().run()
+  }
 }
 </script>
 
@@ -87,6 +99,7 @@ function setColor(event: Event): void {
     <!-- h1-h4 p -->
     <template v-for="(btn, index) in headings" :key="index">
       <v-btn
+        class="Toolbar__TextButton"
         rounded="lg"
         :variant="props.editor.isActive('heading', { level: btn.level }) ? 'tonal' : 'plain'"
         :color="props.editor.isActive('heading', { level: btn.level }) ? 'drakgrey' : undefined"
@@ -96,6 +109,7 @@ function setColor(event: Event): void {
     </template>
 
     <v-btn
+      class="Toolbar__TextButton"
       rounded="lg"
       :variant="props.editor.isActive('paragraph') ? 'tonal' : 'plain'"
       :color="props.editor.isActive('paragraph') ? 'drakgrey' : undefined"
@@ -107,6 +121,7 @@ function setColor(event: Event): void {
     <!-- フォントスタイル変更 -->
     <template v-for="(btn, index) in styleBtns" :key="index">
       <v-btn
+        class="Toolbar__Button"
         :icon="btn.icon"
         rounded="lg"
         :variant="getVariant(btn.actionName)"
@@ -114,12 +129,18 @@ function setColor(event: Event): void {
         @click="btn.click()"
       />
     </template>
-    <input type="color" :value="props.editor.getAttributes('textStyle').color" @input="setColor($event)" />
+    <input
+      class="Toolbar__ColorInput"
+      type="color"
+      :value="props.editor.getAttributes('textStyle').color"
+      @input="setColor($event)"
+    />
     <v-divider vertical />
 
     <!-- 配置変更 -->
     <template v-for="(t, index) in textAlign" :key="index">
       <v-btn
+        class="Toolbar__Button"
         rounded="lg"
         :icon="'mdi-format-align-' + t"
         :variant="editor.isActive({ textAlign: t }) ? 'tonal' : 'plain'"
@@ -132,6 +153,7 @@ function setColor(event: Event): void {
     <!-- フォーマット変更 -->
     <template v-for="(btn, index) in formatBtns" :key="index">
       <v-btn
+        class="Toolbar__Button"
         :icon="btn.icon"
         rounded="lg"
         :variant="getVariant(btn.actionName)"
@@ -140,6 +162,7 @@ function setColor(event: Event): void {
       />
     </template>
     <v-btn
+      class="Toolbar__Button"
       rounded="lg"
       icon="mdi-format-indent-increase"
       :variant="editor.can().sinkListItem('listItem') ? 'tonal' : 'plain'"
@@ -147,12 +170,16 @@ function setColor(event: Event): void {
       @click="editor.chain().focus().sinkListItem('listItem').run()"
     />
     <v-btn
+      class="Toolbar__Button"
       rounded="lg"
       icon="mdi-format-indent-decrease"
       :variant="editor.can().liftListItem('listItem') ? 'tonal' : 'plain'"
       :color="editor.can().liftListItem('listItem') ? 'drakgrey' : undefined"
       @click="editor.chain().focus().liftListItem('listItem').run()"
     />
+
+    <!-- その他設定 -->
+    <v-btn class="Toolbar__Button" icon="mdi-link" rounded="lg" variant="plain" @click="setLink()" />
   </div>
 </template>
 
@@ -162,5 +189,21 @@ function setColor(event: Event): void {
   display: flex;
   align-items: flex-start;
   flex-wrap: wrap;
+
+  &__TextButton {
+    height: 36px;
+    padding: 0;
+  }
+
+  &__Button {
+    height: 36px;
+    --v-btn-height: 24px;
+  }
+
+  &__ColorInput {
+    width: 32px;
+    height: 32px;
+    margin: 4px;
+  }
 }
 </style>

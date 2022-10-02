@@ -52,7 +52,7 @@ onBeforeUnmount(() => {
 
 /** HTML加工 */
 function convertHtml(html: string) {
-  const tags = ['</h1>', '</h2>', '</h3>', '</h4>', '</ul>', '</li>', '</p>', '<br>', '<hr>']
+  const tags = ['</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</ul>', '</li>', '<br>', '<hr>']
   return tags.reduce((s, tag) => s.replaceAll(tag, `${tag}\r\n`), html)
 }
 </script>
