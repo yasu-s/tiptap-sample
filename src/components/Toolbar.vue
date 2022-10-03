@@ -178,16 +178,16 @@ function setLink(): void {
       class="Toolbar__Button"
       rounded="lg"
       icon="mdi-format-indent-increase"
-      :variant="editor.can().sinkListItem('listItem') ? 'tonal' : 'plain'"
-      :color="editor.can().sinkListItem('listItem') ? 'drakgrey' : undefined"
+      variant="plain"
+      :disabled="!editor.can().sinkListItem('listItem')"
       @click="editor.chain().focus().sinkListItem('listItem').run()"
     />
     <v-btn
       class="Toolbar__Button"
       rounded="lg"
       icon="mdi-format-indent-decrease"
-      :variant="editor.can().liftListItem('listItem') ? 'tonal' : 'plain'"
-      :color="editor.can().liftListItem('listItem') ? 'drakgrey' : undefined"
+      variant="plain"
+      :disabled="!editor.can().liftListItem('listItem')"
       @click="editor.chain().focus().liftListItem('listItem').run()"
     />
 
