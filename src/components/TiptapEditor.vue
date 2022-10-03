@@ -9,6 +9,7 @@ import { Link } from '@tiptap/extension-link'
 import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
 import { Underline } from '@tiptap/extension-underline'
+import pretty from 'pretty'
 import Toolbar from './Toolbar.vue'
 
 /** props */
@@ -35,13 +36,13 @@ const editor = useEditor({
     }),
   ],
   onUpdate: (params) => {
-    emit('update:modelValue', convertHtml(params.editor.getHTML()))
+    emit('update:modelValue', pretty(params.editor.getHTML()))
   },
 })
 
 /** modelValue監視 */
 watch(modelValue, () => {
-  if (modelValue.value === convertHtml(editor.value?.getHTML() || '')) return
+  if (modelValue.value === pretty(editor.value?.getHTML() || '')) return
   editor.value?.commands.setContent(modelValue.value)
 })
 
@@ -49,12 +50,6 @@ watch(modelValue, () => {
 onBeforeUnmount(() => {
   editor.value?.destroy()
 })
-
-/** HTML加工 */
-function convertHtml(html: string) {
-  const tags = ['</h1>', '</h2>', '</h3>', '</h4>', '</h5>', '</ul>', '</li>', '<br>', '<hr>']
-  return tags.reduce((s, tag) => s.replaceAll(tag, `${tag}\r\n`), html)
-}
 </script>
 
 <template>

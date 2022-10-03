@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import TiptapEditor from './components/TiptapEditor.vue'
 import HtmlPreviewPanel from './components/HtmlPreviewPanel.vue'
+import pretty from 'pretty'
 
 /** サンプルHTML */
 const sampleHtml = `<h1>h1</h1>
@@ -59,7 +60,7 @@ const sampleHtml = `<h1>h1</h1>
 `
 
 /** HTMLコンテンツ */
-const content = ref(sampleHtml)
+const content = ref(pretty(sampleHtml))
 </script>
 
 <template>
