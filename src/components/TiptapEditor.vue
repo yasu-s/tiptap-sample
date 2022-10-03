@@ -10,6 +10,7 @@ import TextAlign from '@tiptap/extension-text-align'
 import TextStyle from '@tiptap/extension-text-style'
 import { Underline } from '@tiptap/extension-underline'
 import pretty from 'pretty'
+import { Indent } from '../extensions/Indent'
 import Toolbar from './Toolbar.vue'
 
 /** props */
@@ -23,6 +24,7 @@ const emit = defineEmits<{ (e: 'update:modelValue', value: string): string }>()
 const editor = useEditor({
   content: props.modelValue,
   extensions: [
+    Indent,
     StarterKit,
     Color,
     TextStyle,

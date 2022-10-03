@@ -63,7 +63,7 @@ const formatBtns = [
   {
     icon: 'mdi-format-list-bulleted',
     actionName: 'bulletList',
-    click: () => props.editor.chain().focus().toggleBulletList().run(),
+    click: () => props.editor.chain().focus().toggleIndent().run(),
   },
   {
     icon: 'mdi-format-list-numbered',
