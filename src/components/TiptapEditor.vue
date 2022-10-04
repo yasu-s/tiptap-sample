@@ -43,7 +43,8 @@ const editor = useEditor({
 /** modelValue監視 */
 watch(modelValue, () => {
   if (modelValue.value === pretty(editor.value?.getHTML() || '')) return
-  editor.value?.commands.setContent(modelValue.value)
+  const h = modelValue.value.split('\n')
+  editor.value?.commands.setContent(h.map((s) => s || '<p></p>').join(''))
 })
 
 /** unmound時 */
