@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive } from 'vue'
 import TiptapEditor from './components/TiptapEditor.vue'
 import HtmlPreviewPanel from './components/HtmlPreviewPanel.vue'
 import pretty from 'pretty'
@@ -60,19 +60,64 @@ const sampleHtml = `<h1>h1</h1>
 <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.google.com/">URLリンク</a></p>
 `
 
-/** HTMLコンテンツ */
-const content = ref(pretty(sampleHtml))
+/** state */
+const state = reactive({
+  editContent: pretty(sampleHtml),
+  toc: [] as { id: number; name: string }[],
+  previewContent: pretty(sampleHtml),
+})
+
+/** 表示コンテンツ設定 */
+function setPreviewContent() {
+  const domParser = new DOMParser()
+  const doc = domParser.parseFromString(state.editContent, 'text/html')
+  const items = doc.querySelectorAll('h1')
+
+  const toc: { id: number; name: string }[] = []
+  for (let i = 0; i < items.length; i++) {
+    const item = items.item(i)
+    item.setAttribute('data-toc-id', i.toString())
+    toc.push({ id: i, name: item.textContent || '' })
+  }
+
+  state.previewContent = doc.documentElement.outerHTML
+  state.toc = toc
+}
+
+function scroll(id: number) {
+  const el = document.querySelector(`[data-toc-id="${id}"]`)
+  if (!el) return
+  el.scrollIntoView()
+}
 </script>
 
 <template>
   <div class="App">
     <div class="App__EditorPane">
-      <TiptapEditor v-model="content" class="App__TiptapEditor" />
+      <TiptapEditor v-model="state.editContent" class="App__TiptapEditor" @update:model-value="setPreviewContent()" />
     </div>
     <div class="App__SidePanes">
-      <v-textarea v-model="content" label="HTML入力" rows="18" :no-resize="true" hide-details="true" />
-      <div>HTML表示</div>
-      <HtmlPreviewPanel class="App__HtmlPreviewPanel" :content="content" />
+      <v-textarea
+        v-model="state.editContent"
+        label="HTML入力"
+        rows="18"
+        :no-resize="true"
+        hide-details="true"
+        @update:model-value="setPreviewContent()"
+      />
+      <div>
+        <div>HTML表示</div>
+        <div class="App__HtmlPreviewSection">
+          <HtmlPreviewPanel class="App__HtmlPreviewPanel" :content="state.previewContent" />
+          <div class="App__TocPanel">
+            <ul>
+              <template v-for="toc of state.toc" :key="toc.id">
+                <li @click="scroll(toc.id)">{{ toc.name }}</li>
+              </template>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -94,8 +139,22 @@ const content = ref(pretty(sampleHtml))
     height: 100%;
   }
 
+  &__HtmlPreviewSection {
+    display: flex;
+  }
+
   &__HtmlPreviewPanel {
-    height: calc(100% - 464px - 25px);
+    width: 80%;
+    max-height: calc(100vh - 560px);
+  }
+
+  &__TocPanel {
+    width: 20%;
+
+    ul {
+      list-style: none;
+      margin-left: 8px;
+    }
   }
 }
 </style>
